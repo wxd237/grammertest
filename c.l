@@ -23,6 +23,9 @@ WS  [ \t\v\n\f]
 
 %{
 #include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include "pub.h"
 #include "c.tab.h"
 
 extern void yyerror(const char *);  /* prints grammar violation message */
@@ -39,114 +42,114 @@ static int check_type(void);
 "/*"                                    { comment(); }
 "//".*                                    { /* consume //-comment */ }
 
-"auto"					{ return(AUTO); }
-"break"					{ return(BREAK); }
-"case"					{ return(CASE); }
-"char"					{ return(CHAR); }
-"const"					{ return(CONST); }
-"continue"				{ return(CONTINUE); }
-"default"				{ return(DEFAULT); }
-"do"					{ return(DO); }
-"double"				{ return(DOUBLE); }
-"else"					{ return(ELSE); }
-"enum"					{ return(ENUM); }
-"extern"				{ return(EXTERN); }
-"float"					{ return(FLOAT); }
-"for"					{ return(FOR); }
-"goto"					{ return(GOTO); }
-"if"					{ return(IF); }
-"inline"				{ return(INLINE); }
-"int"					{ return(INT); }
-"long"					{ return(LONG); }
-"register"				{ return(REGISTER); }
-"restrict"				{ return(RESTRICT); }
-"return"				{ return(RETURN); }
-"short"					{ return(SHORT); }
-"signed"				{ return(SIGNED); }
-"sizeof"				{ return(SIZEOF); }
-"static"				{ return(STATIC); }
-"struct"				{ return(STRUCT); }
-"switch"				{ return(SWITCH); }
-"typedef"				{ return(TYPEDEF); }
-"union"					{ return(UNION); }
-"unsigned"				{ return(UNSIGNED); }
-"void"					{ return(VOID); }
-"volatile"				{ return(VOLATILE); }
-"while"					{ return(WHILE); }
-"_Alignas"                              { return ALIGNAS; }
-"_Alignof"                              { return ALIGNOF; }
-"_Atomic"                               { return ATOMIC; }
-"_Bool"                                 { return BOOL; }
-"_Complex"                              { return COMPLEX; }
-"_Generic"                              { return GENERIC; }
-"_Imaginary"                            { return IMAGINARY; }
-"_Noreturn"                             { return NORETURN; }
-"_Static_assert"                        { return STATIC_ASSERT; }
-"_Thread_local"                         { return THREAD_LOCAL; }
-"__func__"                              { return FUNC_NAME; }
+"auto"					{ newNode(yytext,0); return(AUTO); }
+"break"					{ newNode(yytext,0); return(BREAK); }
+"case"					{ newNode(yytext,0); return(CASE); }
+"char"					{ newNode(yytext,0); return(CHAR); }
+"const"					{ newNode(yytext,0); return(CONST); }
+"continue"				{ newNode(yytext,0); return(CONTINUE); }
+"default"				{ newNode(yytext,0); return(DEFAULT); }
+"do"					{ newNode(yytext,0); return(DO); }
+"double"				{ newNode(yytext,0); return(DOUBLE); }
+"else"					{ newNode(yytext,0); return(ELSE); }
+"enum"					{ newNode(yytext,0); return(ENUM); }
+"extern"				{ newNode(yytext,0); return(EXTERN); }
+"float"					{ newNode(yytext,0); return(FLOAT); }
+"for"					{ newNode(yytext,0); return(FOR); }
+"goto"					{ newNode(yytext,0); return(GOTO); }
+"if"					{ newNode(yytext,0); return(IF); }
+"inline"				{ newNode(yytext,0); return(INLINE); }
+"int"					{ newNode(yytext,0); return(INT); }
+"long"					{ newNode(yytext,0); return(LONG); }
+"register"				{ newNode(yytext,0); return(REGISTER); }
+"restrict"				{ newNode(yytext,0); return(RESTRICT); }
+"return"				{ newNode(yytext,0); return(RETURN); }
+"short"					{ newNode(yytext,0); return(SHORT); }
+"signed"				{ newNode(yytext,0); return(SIGNED); }
+"sizeof"				{ newNode(yytext,0); return(SIZEOF); }
+"static"				{ newNode(yytext,0); return(STATIC); }
+"struct"				{ newNode(yytext,0); return(STRUCT); }
+"switch"				{ newNode(yytext,0); return(SWITCH); }
+"typedef"				{ newNode(yytext,0); return(TYPEDEF); }
+"union"					{ newNode(yytext,0); return(UNION); }
+"unsigned"				{ newNode(yytext,0); return(UNSIGNED); }
+"void"					{ newNode(yytext,0); return(VOID); }
+"volatile"				{ newNode(yytext,0); return(VOLATILE); }
+"while"					{ newNode(yytext,0); return(WHILE); }
+"_Alignas"                              { newNode(yytext,0); return ALIGNAS; }
+"_Alignof"                              { newNode(yytext,0); return ALIGNOF; }
+"_Atomic"                               { newNode(yytext,0); return ATOMIC; }
+"_Bool"                                 { newNode(yytext,0); return BOOL; }
+"_Complex"                              { newNode(yytext,0); return COMPLEX; }
+"_Generic"                              { newNode(yytext,0); return GENERIC; }
+"_Imaginary"                            { newNode(yytext,0); return IMAGINARY; }
+"_Noreturn"                             { newNode(yytext,0); return NORETURN; }
+"_Static_assert"                        { newNode(yytext,0); return STATIC_ASSERT; }
+"_Thread_local"                         { newNode(yytext,0); return THREAD_LOCAL; }
+"__func__"                              { newNode(yytext,0); return FUNC_NAME; }
 
-{L}{A}*					{ return check_type(); }
+{L}{A}*					{ newNode(yytext,0); return check_type(); }
 
-{HP}{H}+{IS}?				{ return I_CONSTANT; }
-{NZ}{D}*{IS}?				{ return I_CONSTANT; }
-"0"{O}*{IS}?				{ return I_CONSTANT; }
-{CP}?"'"([^'\\\n]|{ES})+"'"		{ return I_CONSTANT; }
+{HP}{H}+{IS}?				{ newNode(yytext,0); return I_CONSTANT; }
+{NZ}{D}*{IS}?				{ newNode(yytext,0); return I_CONSTANT; }
+"0"{O}*{IS}?				{ newNode(yytext,0); return I_CONSTANT; }
+{CP}?"'"([^'\\\n]|{ES})+"'"		{ newNode(yytext,0); return I_CONSTANT; }
 
-{D}+{E}{FS}?				{ return F_CONSTANT; }
-{D}*"."{D}+{E}?{FS}?			{ return F_CONSTANT; }
-{D}+"."{E}?{FS}?			{ return F_CONSTANT; }
-{HP}{H}+{P}{FS}?			{ return F_CONSTANT; }
-{HP}{H}*"."{H}+{P}{FS}?			{ return F_CONSTANT; }
-{HP}{H}+"."{P}{FS}?			{ return F_CONSTANT; }
+{D}+{E}{FS}?				{ newNode(yytext,0); return F_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?			{ newNode(yytext,0); return F_CONSTANT; }
+{D}+"."{E}?{FS}?			{ newNode(yytext,0); return F_CONSTANT; }
+{HP}{H}+{P}{FS}?			{ newNode(yytext,0); return F_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?			{ newNode(yytext,0); return F_CONSTANT; }
+{HP}{H}+"."{P}{FS}?			{ newNode(yytext,0); return F_CONSTANT; }
 
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ newNode(yytext,0); return STRING_LITERAL; }
 
-"..."					{ return ELLIPSIS; }
-">>="					{ return RIGHT_ASSIGN; }
-"<<="					{ return LEFT_ASSIGN; }
-"+="					{ return ADD_ASSIGN; }
-"-="					{ return SUB_ASSIGN; }
-"*="					{ return MUL_ASSIGN; }
-"/="					{ return DIV_ASSIGN; }
-"%="					{ return MOD_ASSIGN; }
-"&="					{ return AND_ASSIGN; }
-"^="					{ return XOR_ASSIGN; }
-"|="					{ return OR_ASSIGN; }
-">>"					{ return RIGHT_OP; }
-"<<"					{ return LEFT_OP; }
-"++"					{ return INC_OP; }
-"--"					{ return DEC_OP; }
-"->"					{ return PTR_OP; }
-"&&"					{ return AND_OP; }
-"||"					{ return OR_OP; }
-"<="					{ return LE_OP; }
-">="					{ return GE_OP; }
-"=="					{ return EQ_OP; }
-"!="					{ return NE_OP; }
-";"					{ return ';'; }
-("{"|"<%")				{ return '{'; }
-("}"|"%>")				{ return '}'; }
-","					{ return ','; }
-":"					{ return ':'; }
-"="					{ return '='; }
-"("					{ return '('; }
-")"					{ return ')'; }
-("["|"<:")				{ return '['; }
-("]"|":>")				{ return ']'; }
-"."					{ return '.'; }
-"&"					{ return '&'; }
-"!"					{ return '!'; }
-"~"					{ return '~'; }
-"-"					{ return '-'; }
-"+"					{ return '+'; }
-"*"					{ return '*'; }
-"/"					{ return '/'; }
-"%"					{ return '%'; }
-"<"					{ return '<'; }
-">"					{ return '>'; }
-"^"					{ return '^'; }
-"|"					{ return '|'; }
-"?"					{ return '?'; }
+"..."					{ newNode(yytext,0); return ELLIPSIS; }
+">>="					{ newNode(yytext,0); return RIGHT_ASSIGN; }
+"<<="					{ newNode(yytext,0); return LEFT_ASSIGN; }
+"+="					{ newNode(yytext,0); return ADD_ASSIGN; }
+"-="					{ newNode(yytext,0); return SUB_ASSIGN; }
+"*="					{ newNode(yytext,0); return MUL_ASSIGN; }
+"/="					{ newNode(yytext,0); return DIV_ASSIGN; }
+"%="					{ newNode(yytext,0); return MOD_ASSIGN; }
+"&="					{ newNode(yytext,0); return AND_ASSIGN; }
+"^="					{ newNode(yytext,0); return XOR_ASSIGN; }
+"|="					{ newNode(yytext,0); return OR_ASSIGN; }
+">>"					{ newNode(yytext,0); return RIGHT_OP; }
+"<<"					{ newNode(yytext,0); return LEFT_OP; }
+"++"					{ newNode(yytext,0); return INC_OP; }
+"--"					{ newNode(yytext,0); return DEC_OP; }
+"->"					{ newNode(yytext,0); return PTR_OP; }
+"&&"					{ newNode(yytext,0); return AND_OP; }
+"||"					{ newNode(yytext,0); return OR_OP; }
+"<="					{ newNode(yytext,0); return LE_OP; }
+">="					{ newNode(yytext,0); return GE_OP; }
+"=="					{ newNode(yytext,0); return EQ_OP; }
+"!="					{ newNode(yytext,0); return NE_OP; }
+";"					{ newNode(yytext,0); return ';'; }
+("{"|"<%")				{ newNode(yytext,0); return '{'; }
+("}"|"%>")				{ newNode(yytext,0); return '}'; }
+","					{ newNode(yytext,0); return ','; }
+":"					{ newNode(yytext,0); return ':'; }
+"="					{ newNode(yytext,0); return '='; }
+"("					{ newNode(yytext,0); return '('; }
+")"					{ newNode(yytext,0); return ')'; }
+("["|"<:")				{ newNode(yytext,0); return '['; }
+("]"|":>")				{ newNode(yytext,0); return ']'; }
+"."					{ newNode(yytext,0); return '.'; }
+"&"					{ newNode(yytext,0); return '&'; }
+"!"					{ newNode(yytext,0); return '!'; }
+"~"					{ newNode(yytext,0); return '~'; }
+"-"					{ newNode(yytext,0); return '-'; }
+"+"					{ newNode(yytext,0); return '+'; }
+"*"					{ newNode(yytext,0); return '*'; }
+"/"					{ newNode(yytext,0); return '/'; }
+"%"					{ newNode(yytext,0); return '%'; }
+"<"					{ newNode(yytext,0); return '<'; }
+">"					{ newNode(yytext,0); return '>'; }
+"^"					{ newNode(yytext,0); return '^'; }
+"|"					{ newNode(yytext,0); return '|'; }
+"?"					{ newNode(yytext,0); return '?'; }
 
 {WS}					{ /* whitespace separates tokens */ }
 .					{ /* discard bad characters */ }
@@ -183,6 +186,9 @@ void yyerror(const char *s)
         fflush(stdout);
         fprintf(stderr, "*** %s\n", s);
 }
+
+
+
 
 
 static int check_type(void)
